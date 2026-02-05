@@ -1,7 +1,8 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { User as UserModel } from 'generated/prisma/client';
 import { UserService } from './user.service';
 import { Prisma } from 'generated/prisma/browser';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 
 
@@ -9,6 +10,7 @@ import { Prisma } from 'generated/prisma/browser';
 export class UserController {
 
     constructor(private userService: UserService) { }
+    
 
     @Post()
     async signupUser(
@@ -22,6 +24,7 @@ export class UserController {
         return this.userService.users({});
     }
 
+    @UseGuards(AuthGuard)
     @Get(':id')
     async getUserById(@Param('id') id: string): Promise<UserModel | null> {
         return this.userService.user({ id: Number(id) });
